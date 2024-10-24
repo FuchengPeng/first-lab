@@ -111,7 +111,7 @@ while (balls.length < 25) {
 
 // 定义一个循环来不停地播放
 function loop() {
-  ctx.fillStyle = 'rgba(0,0,0,0.1)'; // 半透明背景
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
   ctx.fillRect(0, 0, width, height);
 
   for (let i = 0; i < balls.length; i++) {
@@ -120,7 +120,58 @@ function loop() {
     balls[i].collisionDetect();
   }
 
+  blackHole.update();
+  blackHole.eatBalls();
+
   requestAnimationFrame(loop);
 }
-
 loop();
+
+// 定义黑洞对象
+// 定义黑洞构造器
+function BlackHole(x, y, size) {
+  this.x = x;
+  this.y = y;
+  this.size = size;
+}
+
+//更新黑洞位置
+let mouse = { x: 0, y: 0 };
+
+canvas.addEventListener('mousemove', function(e) {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+// 定义黑洞绘制函数
+BlackHole.prototype.draw = function() {
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+  ctx.fillStyle = 'black';
+  ctx.fill();
+};
+
+// 定义黑洞更新函数
+BlackHole.prototype.update = function() {
+  this.x = mouse.x;
+  this.y = mouse.y;
+  this.draw();
+};
+
+// 定义黑洞吞噬彩球函数
+BlackHole.prototype.eatBalls = function() {
+  for (let i = 0; i < balls.length; i++) {
+    const dx = balls[i].x - this.x;
+    const dy = balls[i].y - this.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < this.size + balls[i].size) {
+      balls.splice(i, 1);
+      i--;
+    }
+  }
+};
+
+// 创建黑洞实例
+const blackHole = new BlackHole(0, 0, 30);
+
+
