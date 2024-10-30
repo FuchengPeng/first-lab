@@ -151,9 +151,9 @@ demonEllipse.update(event.clientX ,event.clientY );
 
 function loop() {
 ctx.fillStyle= 'rgba(0，0，0，0.1)';
-ctx.fillRect(0，0，width，height);
+ctx.fillRect(0,0,width,height);
 
-for(let i=0；i<balls.length；i++) {
+for(let i=0;i<balls.length;i++) {
 balls[i].draw();
 balls[i].update();
 balls[i].collisionDetect();
