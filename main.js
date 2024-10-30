@@ -109,18 +109,59 @@ while (balls.length < 25) {
   balls.push(ball);
 }
 
-// 定义一个循环来不停地播放
+// 恶魔圈对象
+const demonEllipse = {
+  x: width / 2,
+  y: height / 2,
+  radiusX: 60,
+  radiusY: 40,
+
+  draw() {
+    ctx.beginPath();
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 3;
+    ctx.ellipse(this.x, this.y, this.radiusX, this.radiusY, Math.PI /4 ,0 , Math.PI *2 );
+    ctx.stroke();
+    
+  
+},
+
+update(mouseX, mouseY) {
+      this.x= mouseX ;
+      this.y= mouseY ;
+
+      // 检测与彩球的碰撞
+      for(let i= balls.length-1 ;i>=0 ;i--) {
+        const dx= Math.abs(this.x- balls[i].x );
+        const dy= Math.abs(this.y- balls[i].y );
+        
+        // 使用椭圆与圆形的碰撞检测公式
+        if((dx/this.radiusX )**2 +(dy/this.radiusY )**2 <=1 ) {
+          balls.splice(i ,1 ); // 移除被吃掉的彩球
+        }
+      }
+}
+
+};
+
+// 鼠标移动事件监听器
+canvas.addEventListener('mousemove', function(event) {
+demonEllipse.update(event.clientX ,event.clientY );
+});
+
 function loop() {
-  ctx.fillStyle = 'rgba(0,0,0,0.1)'; // 半透明背景
-  ctx.fillRect(0, 0, width, height);
+ctx.fillStyle= 'rgba(0，0，0，0.1)';
+ctx.fillRect(0，0，width，height);
 
-  for (let i = 0; i < balls.length; i++) {
-    balls[i].draw();
-    balls[i].update();
-    balls[i].collisionDetect();
-  }
+for(let i=0；i<balls.length；i++) {
+balls[i].draw();
+balls[i].update();
+balls[i].collisionDetect();
+}
 
-  requestAnimationFrame(loop);
+demonEllipse.draw();
+
+requestAnimationFrame(loop);
 }
 
 loop();
